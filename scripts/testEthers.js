@@ -1,13 +1,14 @@
-const deployNativeAnchor = require('./utils/deployNativeAnchor');
-const depositNativeAnchor = require('./utils/depositNativeAnchor');
-const getDepositEvents = require('./utils/getDepositEvents');
+require("dotenv").config({ path: '../.env' });
+const deployNativeAnchor = require('./utils/ethers/deployNativeAnchor');
+const depositNativeAnchor = require('./utils/ethers/depositNativeAnchor');
+const getDepositEvents = require('./utils/ethers/getDepositEvents');
 
 async function testEthers() {
     // Test EVM deployment of a contract
     const anchorAddress = await deployNativeAnchor();
     console.log("mixer deployed at: " + anchorAddress);
     
-    // Test EVM transaction
+    // Test EVM transaction on existing contract
     const noteString = await depositNativeAnchor(anchorAddress);
     console.log("deposit successful: " + noteString);
 

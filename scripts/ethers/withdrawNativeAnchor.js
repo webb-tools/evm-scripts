@@ -1,10 +1,11 @@
+require("dotenv").config({ path: '../.env' });
+
 const MerkleTree = require('../../lib/MerkleTree');
-const getDepositEvents = require('../utils/getDepositEvents');
+const getDepositEvents = require('../utils/ethers/getDepositEvents');
 const parseNote = require('../utils/parseNote');
 const fs = require('fs');
 
 const ethers = require("ethers");
-require("dotenv").config({ path: '../.env' });
 const websnarkUtils = require('websnark/src/utils')
 const buildGroth16 = require('websnark/src/groth16')
 const snarkjs = require('snarkjs');
@@ -33,8 +34,6 @@ const anchorInstance = new ethers.Contract(contractAddress, anchorAbi.abi, walle
 async function generateMerkleProof(deposit) {
     const events = await getDepositEvents(contractAddress);
 
-    console.log(events);
-
     const leaves = events
         .sort((a, b) => a.args.leafIndex - b.args.leafIndex) // Sort events in chronological order
         .map(e => e.args.commitment);
@@ -43,7 +42,11 @@ async function generateMerkleProof(deposit) {
     let depositEvent = events.find(e => e.args.commitment === toHex(deposit.commitment));
     let leafIndex = depositEvent ? depositEvent.args.leafIndex : -1
 
-    return await tree.path(leafIndex);
+    const retVals = await tree.path(leafIndex);
+
+    console.log(retVals);
+
+    return retVals;
 }
 
 async function generateSnarkProof(deposit, recipient) {
@@ -91,12 +94,12 @@ async function generateSnarkProof(deposit, recipient) {
 async function withdraw(noteString, recipient) {
     const deposit = parseNote(noteString);
     const {proof, args} = await generateSnarkProof(deposit, recipient);
-    const logs = await anchorInstance.withdraw(proof, ...args, { from: (await wallet.getAddress()) })
-    console.log(logs);   
+    const logs = await anchorInstance.withdraw(proof, ...args, { from: (await wallet.getAddress()), gasLimit: '6000000' });
+    return logs;
 }
 
 async function runScript() {
-    await withdraw(noteString, recipientAddress);
+    return await withdraw(noteString, recipientAddress);
 }
 
 runScript();

@@ -1,10 +1,10 @@
 const ethers = require("ethers");
-require("dotenv").config({ path: '../.env' });
+require("dotenv").config({ path: '../../../.env' });
 const snarkjs = require('snarkjs');
 const crypto = require('crypto');
 const bigInt = snarkjs.bigInt
-const createDeposit = require('../utils/createDeposit');
-const nativeAnchorAbi = require('../../build/contracts/NativeAnchor.json');
+const createDeposit = require('../createDeposit');
+const nativeAnchorAbi = require('../../../build/contracts/NativeAnchor.json');
 
 const rbigint = (nbytes) => snarkjs.bigInt.leBuff2int(crypto.randomBytes(nbytes));
 const toFixedHex = (number, length = 32) => 

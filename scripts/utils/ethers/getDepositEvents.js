@@ -1,6 +1,6 @@
 const ethers = require("ethers");
-require("dotenv").config({ path: '../../.env' });
-const anchorAbi = require("../../build/contracts/Anchor.json");
+require("dotenv").config({ path: '../../../.env' });
+const anchorAbi = require("../../../build/contracts/Anchor.json");
 
 let provider;
 

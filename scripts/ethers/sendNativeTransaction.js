@@ -13,14 +13,15 @@ else {
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 async function sendTransaction() {
-    const signedTx = await wallet.signTransaction({
+    const sendEthersTx = {
         to: `${process.env.RECIPIENT_1}`,
-        value: ethers.utils.parseEther("1.0")
-    });
+        value: ethers.BigNumber.from(`${process.env.TRANSFER_VALUE}`),
+        from: wallet.address
+    };
 
-    wallet.sendTransaction(signedTx);
+    const transactionResponse = await wallet.sendTransaction(sendEthersTx);
 
-    const result = await wallet.providers.waitForTransaction(signedTx);
+    const result = await transactionResponse.wait();
 
     console.log(result);
     return result;

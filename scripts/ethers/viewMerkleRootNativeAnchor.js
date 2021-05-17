@@ -2,7 +2,7 @@
 
 const ethers = require("ethers");
 const nativeAnchorAbi = require('../../build/contracts/NativeAnchor.json');
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config({ path: '../.env' });
 
 const contractAddress = process.argv[2];
 

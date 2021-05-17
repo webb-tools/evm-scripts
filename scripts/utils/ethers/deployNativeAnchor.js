@@ -1,8 +1,8 @@
-require("dotenv").config({ path: '../.env' });
+require("dotenv").config({ path: '../../../.env' }); //.env path is dependent upon where the script is run.
 const ethers = require("ethers");
 const genContract = require('circomlib/src/mimcsponge_gencontract.js');
-const verifierContract = require('../../build/contracts/Verifier.json');
-const nativeAnchorContract = require('../../build/contracts/NativeAnchor.json');
+const verifierContract = require('../../../build/contracts/Verifier.json');
+const nativeAnchorContract = require('../../../build/contracts/NativeAnchor.json');
 
 const hasherContractRaw = {
   contractName: 'Hasher',
@@ -32,6 +32,7 @@ else {
 }
 
 const privateKey = process.env.PRIVATE_KEY;
+console.log(privateKey);
 const wallet = new ethers.Wallet(privateKey, provider);
 
 async function deployNativeAnchor() {

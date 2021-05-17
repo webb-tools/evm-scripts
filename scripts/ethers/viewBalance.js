@@ -11,10 +11,10 @@ else {
 }
 
 async function viewBalance(address) {
-    var weiBalance = await provider.getBalance(address);
-    var etherBalance = ethers.utils.formatEther(weiBalance);
-    console.log(etherBalance);
-    return etherBalance;
+    var atomicBalance = await provider.getBalance(address);
+    var nativeBalance = ethers.utils.formatUnits(atomicBalance, process.env.DECIMALS);
+    console.log(nativeBalance);
+    return nativeBalance;
 }
 
 var address = process.argv[2];
