@@ -32,7 +32,6 @@ else {
 }
 
 const privateKey = process.env.PRIVATE_KEY;
-console.log(privateKey);
 const wallet = new ethers.Wallet(privateKey, provider);
 
 async function deployNativeAnchor() {
