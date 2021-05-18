@@ -13,10 +13,8 @@ else {
 }
 const web3 = new Web3(provider);
 
-const contractAddress = process.argv[2];
-
 // Get all emitted event information about deposits
-async function readDeposits() {
+module.exports = async function readDeposits(contractAddress) {
     const anchorInstance = new web3.eth.Contract(anchorAbi.abi, contractAddress);
 
     const logs = await anchorInstance.getPastEvents('Deposit', {
@@ -24,7 +22,5 @@ async function readDeposits() {
         toBlock: 'latest'
     });
 
-    console.log(logs);
+    return logs;
 }
-
-readDeposits();
