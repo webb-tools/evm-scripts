@@ -44,16 +44,12 @@ async function generateMerkleProof(deposit) {
 
     const retVals = await tree.path(leafIndex);
 
-    console.log(retVals);
-
     return retVals;
 }
 
 async function generateSnarkProof(deposit, recipient) {
     // find the inputs that correspond to the path for the deposit
     const { root, path_elements, path_index } = await generateMerkleProof(deposit);
-
-    console.log(root);
 
     let groth16 = await buildGroth16();
     let circuit = require('../../build/circuits/withdraw.json');
@@ -75,7 +71,7 @@ async function generateSnarkProof(deposit, recipient) {
         pathElements: path_elements,
         pathIndices: path_index,
     }
-
+    
     const proofData = await websnarkUtils.genWitnessAndProve(groth16, input, circuit, proving_key)
     const { proof } = websnarkUtils.toSolidityInput(proofData)
 
