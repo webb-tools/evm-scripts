@@ -90,7 +90,7 @@ async function generateSnarkProof(deposit, recipient) {
 async function withdraw(noteString, recipient) {
     const deposit = parseNote(noteString);
     const {proof, args} = await generateSnarkProof(deposit, recipient);
-    const logs = await anchorInstance.withdraw(proof, ...args, { from: (await wallet.getAddress()), gasLimit: 6000000 });
+    const logs = await anchorInstance.withdraw(proof, ...args, { from: (await wallet.getAddress()), gasLimit: '0x5B8D80' });
     return logs;
 }
 

@@ -16,7 +16,8 @@ async function sendTransaction() {
     const sendEthersTx = {
         to: `${process.env.RECIPIENT_1}`,
         value: ethers.BigNumber.from(`${process.env.TRANSFER_VALUE}`),
-        from: wallet.address
+        from: wallet.address,
+        gasLimit: '0x5B8D80'
     };
 
     const transactionResponse = await wallet.sendTransaction(sendEthersTx);
