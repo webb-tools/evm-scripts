@@ -6,21 +6,21 @@ const anchorAbi = require("../../build/contracts/Anchor.json");
 let provider;
 
 if (process.env.WEBSOCKETS) {
-    provider = new Web3.providers.WebsocketProvider(`${process.env.ENDPOINT}`);
+  provider = new Web3.providers.WebsocketProvider(`${process.env.ENDPOINT}`);
 }
 else {
-    provider = new Web3.providers.HttpProvider(`${process.env.ENDPOINT}`);
+  provider = new Web3.providers.HttpProvider(`${process.env.ENDPOINT}`);
 }
 const web3 = new Web3(provider);
 
 // Get all emitted event information about deposits
 module.exports = async function readDeposits(contractAddress) {
-    const anchorInstance = new web3.eth.Contract(anchorAbi.abi, contractAddress);
+  const anchorInstance = new web3.eth.Contract(anchorAbi.abi, contractAddress);
 
-    const logs = await anchorInstance.getPastEvents('Deposit', {
-        fromBlock: 0,
-        toBlock: 'latest'
-    });
+  const logs = await anchorInstance.getPastEvents('Deposit', {
+    fromBlock: 0,
+    toBlock: 'latest'
+  });
 
-    return logs;
+  return logs;
 }

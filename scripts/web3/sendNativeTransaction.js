@@ -1,34 +1,28 @@
 require("dotenv").config({ path: '../.env' });
 const Web3 = require('web3');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 
-let provider;
-
-if (process.env.WEBSOCKETS) {
-    provider = new Web3.providers.WebsocketProvider(`${process.env.ENDPOINT}`);
-}
-else {
-    provider = new Web3.providers.HttpProvider(`${process.env.ENDPOINT}`);
-}
+let provider = new HDWalletProvider({
+  providerOrUrl: `${process.env.ENDPOINT}`,
+  privateKeys: [`${process.env.PRIVATE_KEY}`],
+});
 
 const web3 = new Web3(provider);
 
 async function sendTransaction() {
+  const accounts = await web3.eth.getAccounts();
 
-    const web3Account = web3.eth.accounts.privateKeyToAccount(`${process.env.PRIVATE_KEY}`);
+  const sendWeb3Tx = {
+    to: `${process.env.RECIPIENT_1}`,
+    value: web3.utils.toBN(`${process.env.TRANSFER_VALUE}`),
+    from: accounts[0]
+  };
 
-    const sendWeb3Tx = {
-        to: `${process.env.RECIPIENT_1}`,
-        value: web3.utils.toBN(`${process.env.TRANSFER_VALUE}`),
-        from: web3Account.address
-    };
+  const transactionResponse = await web3.eth.sendTransaction(sendWeb3Tx);
 
-    console.log(web3Account);
-
-    const transactionResponse = await web3.eth.sendTransaction(sendWeb3Tx);
-
-    console.log(transactionResponse);
-    return transactionResponse;
+  console.log(transactionResponse);
+  return transactionResponse;
 }
 
 sendTransaction();
-
+provider.engine.stop();

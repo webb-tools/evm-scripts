@@ -36,7 +36,7 @@ async function deposit() {
     const nativeAnchorInstance = new ethers.Contract(contractAddress, nativeAnchorAbi.abi, wallet);
 
     // Value is taken from contract migration (mixer deposit denomination) and converted to base16
-    const txResponse = await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: '0x16345785D8A0000', gasLimit: '0x5B8D80' });
+    const txResponse = await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: '0x16345785D8A0000', gasPrice: '0x1', gasLimit: '0x5B8D80' });
     const result = await txResponse.wait();
     console.log(result);
 
