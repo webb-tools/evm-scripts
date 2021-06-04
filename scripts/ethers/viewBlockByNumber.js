@@ -16,7 +16,7 @@ async function viewBlockByNumber(blockNumber) {
   return block;
 }
 
-var blockNumber = parseInt(process.argv[2]);
+var blockNumber = parseInt(process.argv[2] || '1');
 
 viewBlockByNumber(blockNumber);
 
