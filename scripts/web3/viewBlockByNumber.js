@@ -11,7 +11,7 @@ let provider = new HDWalletProvider({
 
 const web3 = new Web3(provider);
 
-var blockNumber = process.argv[2];
+var blockNumber = process.argv[2] || 1;
 var output;
 
 async function viewBlockByNumber() {

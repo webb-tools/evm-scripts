@@ -10,7 +10,7 @@ let provider = new HDWalletProvider({
 });
 
 const web3 = new Web3(provider);
-var address = process.argv[2];
+var address = process.argv[2] || '0x6be02d1d3665660d22ff9624b7be0551ee1ac91b';
 
 async function viewBalance() {
   output = await web3.eth.getBalance(address);
