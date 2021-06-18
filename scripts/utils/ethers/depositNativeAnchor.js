@@ -28,12 +28,11 @@ async function depositNativeAnchor(contractAddress) {
   // This contract address should be the same if first transactions made from account[0] on
   // `ganache-cli -m "congress island collect purity dentist team gas unlock nuclear pig combine sight"`
   const nativeAnchorInstance = new ethers.Contract(contractAddress, nativeAnchorAbi.abi, wallet);
-
-  // Value is taken from contract migration (mixer deposit denomination) and converted to base16
-  await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: '0x16345785D8A0000' });
+  const denomination = await nativeAnchorInstance.functions.denomination();
+  await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: denomination });
 
   // return the note of the deposit, contains secret info
-  return `anchor-eth-.1-${chainId}-${toFixedHex(deposit.preimage, 62)}`
+  return `anchor-edg-.1-${chainId}-${toFixedHex(deposit.preimage, 62)}`
 }
 
 module.exports = depositNativeAnchor;

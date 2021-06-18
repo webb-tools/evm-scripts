@@ -16,10 +16,11 @@ module.exports = async function getDepositEvents(contractAddress) {
   const anchorInterface = new ethers.utils.Interface(anchorAbi.abi);
   const anchorInstance = new ethers.Contract(contractAddress, anchorAbi.abi, provider);
   const depositFilterResult = await anchorInstance.filters.Deposit();
+  const currentBlock = await provider.getBlockNumber('latest');
 
   const logs = await provider.getLogs({
-    fromBlock: 0,
-    toBlock: 'latest',  
+    fromBlock: (currentBlock - 1000),
+    toBlock: currentBlock,
     address: contractAddress,
     topics: [depositFilterResult.topics]
   });
