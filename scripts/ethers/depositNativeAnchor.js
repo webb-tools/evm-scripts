@@ -35,10 +35,11 @@ async function deposit() {
     // `ganache-cli -m "congress island collect purity dentist team gas unlock nuclear pig combine sight"`
     const nativeAnchorInstance = new ethers.Contract(contractAddress, nativeAnchorAbi.abi, wallet);
     const denomination = await nativeAnchorInstance.functions.denomination();
-    await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: denomination });
+    console.log(denomination.toString());
+    await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: denomination.toString() });
 
     // return the note of the deposit, contains secret info
-    return `anchor-eth-.1-${chainId}-${toFixedHex(deposit.preimage, 62)}`
+    return `anchor-eth-1-${chainId}-${toFixedHex(deposit.preimage, 62)}`
 }
 
 async function run() {
