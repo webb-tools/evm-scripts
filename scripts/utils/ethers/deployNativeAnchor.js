@@ -36,17 +36,17 @@ const wallet = new ethers.Wallet(privateKey, provider);
 
 async function deployNativeAnchor() {
   const hasherFactory = new ethers.ContractFactory(hasherContractRaw.abi, hasherContractRaw.bytecode, wallet);
-  let hasherInstance = await hasherFactory.deploy();
+  let hasherInstance = await hasherFactory.deploy({gasLimit: '0x5B8D80'});
   await hasherInstance.deployed();
 
   const verifierFactory = new ethers.ContractFactory(verifierContractRaw.abi, verifierContractRaw.bytecode, wallet);
-  let verifierInstance = await verifierFactory.deploy();
+  let verifierInstance = await verifierFactory.deploy({gasLimit: '0x5B8D80'});
   await verifierInstance.deployed();
   
-  const denomination = ethers.BigNumber.from("100000000000000000");
+  const denomination = ethers.BigNumber.from("10000000000000000000");
   const merkleTreeHeight = 20;
   const nativeAnchorFactory = new ethers.ContractFactory(nativeAnchorContractRaw.abi, nativeAnchorContractRaw.bytecode, wallet);
-  let nativeAnchorInstance = await nativeAnchorFactory.deploy(verifierInstance.address, hasherInstance.address, denomination, merkleTreeHeight);
+  let nativeAnchorInstance = await nativeAnchorFactory.deploy(verifierInstance.address, hasherInstance.address, denomination, merkleTreeHeight, {gasLimit: '0x5B8D80'});
   await nativeAnchorInstance.deployed();
 
   return nativeAnchorInstance.address;
