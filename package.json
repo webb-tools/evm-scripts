@@ -40,12 +40,14 @@
     "ethers": "^5.0.0",
     "ganache-cli": "^6.7.0",
     "keccak": "^3.0.0",
+    "node-fetch": "^2.6.1",
     "prettier": "^2.2.1",
     "prettier-plugin-solidity": "^1.0.0-beta.3",
     "snarkjs": "git+https://github.com/tornadocash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5",
     "solhint-plugin-prettier": "^0.0.5",
     "web3": "^1.3.5",
     "web3-utils": "^1.3.5",
-    "websnark": "git+https://github.com/tornadocash/websnark.git#4c0af6a8b65aabea3c09f377f63c44e7a58afa6d"
+    "websnark": "git+https://github.com/tornadocash/websnark.git#4c0af6a8b65aabea3c09f377f63c44e7a58afa6d",
+    "ws": "^7.5.2"
   }
 }

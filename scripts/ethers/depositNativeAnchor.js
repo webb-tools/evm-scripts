@@ -36,7 +36,7 @@ async function deposit() {
     const nativeAnchorInstance = new ethers.Contract(contractAddress, nativeAnchorAbi.abi, wallet);
     const denomination = await nativeAnchorInstance.functions.denomination();
     console.log(denomination.toString());
-    await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: denomination.toString() });
+    await nativeAnchorInstance.deposit(toFixedHex(deposit.commitment), { value: denomination.toString(), gasLimit: '0x5B8D80' });
 
     // return the note of the deposit, contains secret info
     return `anchor-eth-1-${chainId}-${toFixedHex(deposit.preimage, 62)}`
