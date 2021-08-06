@@ -110,8 +110,8 @@ async function getWithdrawTxData(noteString, recipient) {
   const deposit = parseNote(noteString);
   const leaves = await getLeavesFromServer(contractAddress);
   const denomination = await anchorInstance.functions.denomination();
-  const relayerInfo = await getRelayerInformation('http://nepoche.com:9955/api/v1/info', networkName);
-  const fee = calculateFee(relayerInfo.withdrewFeePercentage, denomination);
+  const relayerInfo = await getRelayerInformation('http://localhost:9955/api/v1/info', networkName);
+  const fee = calculateFee(relayerInfo.withdrawFeePercentage, denomination);
   const {proof, args} = await generateSnarkProof(leaves, deposit, recipient, relayerInfo.account, fee);
   let withdrawTxData = {
     contract: contractAddress,
@@ -131,13 +131,13 @@ async function runScript() {
   let relayerMessage = {
     evm: {
       [networkName]: {
-        relayWithdrew: withdrawTxData
+        relayWithdraw: withdrawTxData
       }
     }
   };
 
   // open websocket to the relayer
-  const client = new WebSocket('ws://nepoche.com:9955/ws');
+  const client = new WebSocket('ws://localhost:9955/ws');
   await new Promise((resolve) => client.on('open', resolve));
   console.log('Connected to Relayer!');
 

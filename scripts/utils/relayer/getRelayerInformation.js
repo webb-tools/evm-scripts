@@ -7,8 +7,7 @@ async function getRelayerInformation(relayerEndpoint, chainName) {
 
   return {
     account: relayerInfo.evm[chainName].account,
-    withdrewFeePercentage: relayerInfo.evm[chainName].withdrewFeePercentage,
-    withdrewGaslimit: relayerInfo.evm[chainName].withdrewGaslimit,
+    withdrawFeePercentage: relayerInfo.evm[chainName].withdrawFeePercentage,
   };
 }
 

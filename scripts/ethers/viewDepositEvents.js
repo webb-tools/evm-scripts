@@ -21,14 +21,23 @@ async function readDeposits() {
   const anchorInstance = new ethers.Contract(contractAddress, anchorAbi.abi, provider);
   const depositFilterResult = await anchorInstance.filters.Deposit();
 
-  const currentBlock = await provider.getBlockNumber('latest');
+  const latestBlock = await provider.getBlockNumber('latest');
+  let startingBlock = 286000;
+  let logs = [];
 
-  const logs = await provider.getLogs({
-    fromBlock: (currentBlock - 1000),
-    toBlock: currentBlock,
-    address: contractAddress,
-    topics: [depositFilterResult.topics]
-  });
+  for(let i=startingBlock; i<latestBlock; i += 1000)
+  {
+    logs = [
+        ...logs,
+        ...(await provider.getLogs({
+          fromBlock: i,
+          toBlock: (i + 1000),
+          address: contractAddress,
+          topics: [depositFilterResult.topics]
+      }))
+    ];
+    console.log(`Getting logs for ${i} - ${i+1000}`);
+  }
 
   for (var i=0; i<logs.length; i++)
   {
