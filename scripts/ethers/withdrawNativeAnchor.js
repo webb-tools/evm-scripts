@@ -30,6 +30,7 @@ const recipientAddress = process.argv[4];
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const anchorAbi = require("../../build/contracts/Anchor.json");
 const anchorInstance = new ethers.Contract(contractAddress, anchorAbi.abi, wallet);
+const MERKLE_TREE_HEIGHT = 20;
 
 async function generateMerkleProof(deposit) {
   const events = await getDepositEvents(contractAddress);
@@ -37,7 +38,7 @@ async function generateMerkleProof(deposit) {
   const leaves = events
     .sort((a, b) => a.args.leafIndex - b.args.leafIndex) // Sort events in chronological order
     .map(e => e.args.commitment);
-  const tree = new MerkleTree(process.env.MERKLE_TREE_HEIGHT, leaves);
+  const tree = new MerkleTree(MERKLE_TREE_HEIGHT, leaves);
 
   let depositEvent = events.find(e => e.args.commitment === toHex(deposit.commitment));
   let leafIndex = depositEvent ? depositEvent.args.leafIndex : -1
