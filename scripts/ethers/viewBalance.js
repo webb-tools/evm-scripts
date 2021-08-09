@@ -1,6 +1,8 @@
 const ethers = require("ethers");
 require("dotenv").config({ path: '../.env' });
 
+const DECIMALS = 18;
+
 let provider;
 
 if (process.env.WEBSOCKETS) {
@@ -12,7 +14,7 @@ else {
 
 async function viewBalance(address) {
   var atomicBalance = await provider.getBalance(address);
-  var nativeBalance = ethers.utils.formatUnits(atomicBalance, process.env.DECIMALS);
+  var nativeBalance = ethers.utils.formatUnits(atomicBalance, DECIMALS);
   console.log(nativeBalance);
   return nativeBalance;
 }

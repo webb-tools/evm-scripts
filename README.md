@@ -5,7 +5,11 @@ The scripts are defaulted to run on `ganache-cli -m "congress island collect pur
 
 ## Setup
 
-1. Modify the .env file with the parameters you desire. 
+1. Create the .env file with the parameters you desire. An `.env.example` file has been supplied for reference.
+    - `ENDPOINT`: The http endpoint of a node which handles EVM interactions for the network it is supporting.
+    - `PRIVATE_KEY`: The private key of the account which will send transactions.
+    - `RECIPIENT_1`: The address of a recipient for scripts which transfer value
+    - `TRANSFER_VALUE`: The amount of native currency that is transfered for scripts which transfer value.
 2. Change into the `scripts` directory, all scripts should be run from here.
 3. Run the scripts with `node <script> args[]`
 
