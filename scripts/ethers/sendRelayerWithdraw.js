@@ -5,7 +5,7 @@ const nativeAnchorAbi = require('../../build/contracts/NativeAnchor.json');
 const WebSocket = require('ws');
 const MerkleTree = require('../../lib/MerkleTree');
 const parseNote = require('../utils/parseNote');
-const getLeavesFromServer = require('../utils/getLeavesFromServer');
+const getLeavesFromRelayer = require('../utils/getLeavesFromRelayer');
 const fs = require('fs');
 const websnarkUtils = require('websnark/src/utils');
 const buildGroth16 = require('websnark/src/groth16');
@@ -21,6 +21,7 @@ const noteString = process.argv[3];
 const recipientAddress = process.argv[4];
 const networkName = process.argv[5];
 
+const MERKLE_TREE_HEIGHT = 20;
 let provider;
 
 if (process.env.WEBSOCKETS) {
@@ -45,7 +46,7 @@ const calculateFee = (withdrawFeePercentage, principle) => {
 }
 
 async function generateMerkleProof(deposit, leaves) {
-  const tree = new MerkleTree(process.env.MERKLE_TREE_HEIGHT, leaves);
+  const tree = new MerkleTree(MERKLE_TREE_HEIGHT, leaves);
 
   let leafIndex = leaves.findIndex((entry) => entry == deposit.commitment);
 
@@ -108,9 +109,9 @@ function handleMessage(data) {
 
 async function getWithdrawTxData(noteString, recipient) {
   const deposit = parseNote(noteString);
-  const leaves = await getLeavesFromServer(contractAddress);
+  const leaves = await getLeavesFromRelayer(contractAddress);
   const denomination = await anchorInstance.functions.denomination();
-  const relayerInfo = await getRelayerInformation('http://localhost:9955/api/v1/info', networkName);
+  const relayerInfo = await getRelayerInformation('http://nepoche.com:9955/api/v1/info', networkName);
   const fee = calculateFee(relayerInfo.withdrawFeePercentage, denomination);
   const {proof, args} = await generateSnarkProof(leaves, deposit, recipient, relayerInfo.account, fee);
   let withdrawTxData = {
@@ -137,7 +138,7 @@ async function runScript() {
   };
 
   // open websocket to the relayer
-  const client = new WebSocket('ws://localhost:9955/ws');
+  const client = new WebSocket('ws://nepoche.com:9955/ws');
   await new Promise((resolve) => client.on('open', resolve));
   console.log('Connected to Relayer!');
 
