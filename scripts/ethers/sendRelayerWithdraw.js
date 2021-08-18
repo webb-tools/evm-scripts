@@ -6,6 +6,7 @@ const WebSocket = require('ws');
 const MerkleTree = require('../../lib/MerkleTree');
 const parseNote = require('../utils/parseNote');
 const getLeavesFromRelayer = require('../utils/getLeavesFromRelayer');
+const getDepositEvents = require('../utils/ethers/getDepositEvents');
 const fs = require('fs');
 const websnarkUtils = require('websnark/src/utils');
 const buildGroth16 = require('websnark/src/groth16');
@@ -102,6 +103,8 @@ function handleMessage(data) {
     return 'error';
   } else if (data.withdraw?.finlized) {
     return 'exit';
+  } else if (data.withdraw === 'droppedFromMemPool') {
+    return 'exit';
   } else {
     return 'continue';
   }
@@ -110,6 +113,10 @@ function handleMessage(data) {
 async function getWithdrawTxData(noteString, recipient) {
   const deposit = parseNote(noteString);
   const leaves = await getLeavesFromRelayer(contractAddress);
+  // const events = await getDepositEvents(contractAddress);
+  // const leaves = events
+  //   .sort((a, b) => a.args.leafIndex - b.args.leafIndex) // Sort events in chronological order
+  //   .map(e => e.args.commitment);
   const denomination = await anchorInstance.functions.denomination();
   const relayerInfo = await getRelayerInformation('http://nepoche.com:9955/api/v1/info', networkName);
   const fee = calculateFee(relayerInfo.withdrawFeePercentage, denomination);
