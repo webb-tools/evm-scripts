@@ -3,7 +3,7 @@ const { ApiPromise, WsProvider, ApiOptions } = require('@polkadot/api');
 const spec = require('@edgeware/node-types').spec;
 
 const options = {
-  provider : new WsProvider('ws://beresheet3.edgewa.re:9944'),
+  provider : new WsProvider('ws://beresheet1.edgewa.re:9944'),
   ...spec,
 };
 
@@ -18,7 +18,7 @@ else {
   provider = new ethers.providers.JsonRpcProvider(`${process.env.ENDPOINT}`);
 }
 
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_7, provider);
 
 async function benchmark() {
   const api = await ApiPromise.create(options);
