@@ -220,7 +220,7 @@ async function deployOneSide(wallet, debugPrefix) {
   const webb = await deployWEBBToken(wallet);
   let totalSupply = await webb.totalSupply();
   console.log(`Total supply: ${totalSupply.toString()}`);
-  const tx = await webb.mint(wallet.address, '1000000000000000000000', {
+  const tx = await webb.mint(wallet.address, '1000000000000000000000000', {
     gasLimit: '0x5B8D80',
   });
   await tx.wait();
