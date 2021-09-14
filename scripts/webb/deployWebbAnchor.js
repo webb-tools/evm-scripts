@@ -1,6 +1,6 @@
 // This script can be run without arguments to generate all new contracts or,
 // the script can be run as `node deployWEBBAnchor <hasherAddress> <verifierAddress>`
-//    to create a mixer with existing hasher and verifier contracts.
+// to create a mixer with existing hasher and verifier contracts.
 
 require("dotenv").config({ path: '../.env' });
 const BigNumber = require('bignumber.js');
@@ -99,6 +99,7 @@ async function deployWEBBAnchor() {
   // Rinkeby chain id is 4
   const CHAIN_ID = 4;
   const WEBBAnchorFactory = new ethers.ContractFactory(WEBBAnchorContractRaw.abi, WEBBAnchorContractRaw.bytecode, wallet);
+  // set gov bravo to anchor admin on deployment
   let WEBBAnchorInstance = await WEBBAnchorFactory.deploy(
     verifierInstance.address,
     hasherInstance.address,
@@ -107,7 +108,7 @@ async function deployWEBBAnchor() {
     CHAIN_ID,
     WEBB.address,
     wallet.address,
-    wallet.address,
+    GovBravo.address,
     wallet.address,
   {gasLimit: '0x5B8D80'});
   const WEBBAnchorAddress = await WEBBAnchorInstance.deployed();
@@ -116,8 +117,7 @@ async function deployWEBBAnchor() {
   // transfer ownership of token/minting rights to the anchor
   MINTER_ROLE = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('MINTER_ROLE'));
   receipt = await WEBB.grantRole(MINTER_ROLE, WEBBAnchorAddress.address);
-  // TODO: Figure out more permissions settings, i.e. remove admin role and give to gov bravo
-  console.log(receipt);
+  console.log(receipt);  
   process.exit();
 }
 
