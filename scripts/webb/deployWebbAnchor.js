@@ -101,8 +101,8 @@ async function deployWEBBAnchor() {
   const WEBBAnchorFactory = new ethers.ContractFactory(WEBBAnchorContractRaw.abi, WEBBAnchorContractRaw.bytecode, wallet);
   // set gov bravo to anchor admin on deployment
   let WEBBAnchorInstance = await WEBBAnchorFactory.deploy(
-    '0xBd5782a8D15DEbed35655181cA99e02809f07DDE', 
-    '0xA785cCf40cca32567e3a1378B67B58eb207D37b1',
+    verifierInstance.address,
+    hasherInstance.address,
     denomination,
     merkleTreeHeight,
     CHAIN_ID,
