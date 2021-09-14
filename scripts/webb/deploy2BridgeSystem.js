@@ -26,7 +26,9 @@ async function deployTimelockHarness(wallet) {
 
   // deploy timelockHarness
   const TimelockHarnessFactory = new ethers.ContractFactory(TimelockHarnessContractRaw.abi, TimelockHarnessContractRaw.bytecode, wallet);
-  const TimelockHarness = await TimelockHarnessFactory.deploy(wallet.address, delay);
+  const TimelockHarness = await TimelockHarnessFactory.deploy(wallet.address, delay, {
+    gasLimit: '0x5B8D80',
+  });
   await TimelockHarness.deployed();
   console.log(`Deployed TimelockHarness: ${TimelockHarness.address}`);
 
@@ -42,7 +44,9 @@ async function deployGovBravoImmuable(wallet, webb, timelock) {
 
   // deploy gov bravo
   const GovBravoFactory = new ethers.ContractFactory(GovernorBravoImmutableContractRaw.abi, GovernorBravoImmutableContractRaw.bytecode, wallet);
-  const GovBravo = await GovBravoFactory.deploy(timelock.address, webb.address, wallet.address, '10', '1', '100000000000000000000000');
+  const GovBravo = await GovBravoFactory.deploy(timelock.address, webb.address, wallet.address, '10', '1', '100000000000000000000000', {
+    gasLimit: '0x5B8D80',
+  });
   await GovBravo.deployed();
   console.log(`Deployed GovBravo: ${GovBravo.address}`);
 
@@ -58,7 +62,9 @@ async function deployWEBBToken(wallet) {
 
   // deploy WEBB gov token first and then add to anchor
   const WEBBFactory = new ethers.ContractFactory(WEBBTokenContractRaw.abi, WEBBTokenContractRaw.bytecode, wallet);
-  const WEBB = await WEBBFactory.deploy("Webb Governance Token", "WEBB");
+  const WEBB = await WEBBFactory.deploy("Webb Governance Token", "WEBB", {
+    gasLimit: '0x5B8D80',
+  });
   await WEBB.deployed();
   console.log(`Deployed WEBB: ${WEBB.address}`);
 
@@ -144,7 +150,9 @@ async function deployBridge(wallet, chainId, relayers, thresh, fee, expiry) {
   };
 
   const BridgeFactory = new ethers.ContractFactory(BridgeRaw.abi, BridgeRaw.bytecode, wallet);
-  let BridgeInstance = await BridgeFactory.deploy(chainId, relayers, thresh, fee, expiry);
+  let BridgeInstance = await BridgeFactory.deploy(chainId, relayers, thresh, fee, expiry, {
+    gasLimit: '0x5B8D80',
+  });
   await BridgeInstance.deployed();
   console.log(`Deployed Bridge: ${BridgeInstance.address}`);
 
@@ -159,7 +167,9 @@ async function deployAnchorHandler(wallet, bridge, resourceIds, addresses) {
   };
 
   const AnchorHandlerFactory = new ethers.ContractFactory(AnchorHandlerRaw.abi, AnchorHandlerRaw.bytecode, wallet);
-  let AnchorHandlerInstance = await AnchorHandlerFactory.deploy(bridge.address, resourceIds, addresses);
+  let AnchorHandlerInstance = await AnchorHandlerFactory.deploy(bridge.address, resourceIds, addresses, {
+    gasLimit: '0x5B8D80',
+  });
   await AnchorHandlerInstance.deployed();
   console.log(`Deployed AnchorHandler: ${AnchorHandlerInstance.address}`);
 
@@ -178,10 +188,6 @@ else {
   destChainProvider = new ethers.providers.JsonRpcProvider(`${process.env.CHAIN2_ENDPOINT}`);
 }
 
-// Deployed hasher: 0xA785cCf40cca32567e3a1378B67B58eb207D37b1
-// Deployed verifier: 0xBd5782a8D15DEbed35655181cA99e02809f07DDE
-// Deployed WEBB: 0xE1995fc96859eED4a26c8ca325dD10fBF72E24C3
-
 const privateKey = process.env.PRIVATE_KEY;
 const originWallet = new ethers.Wallet(privateKey, originChainProvider);
 const destWallet = new ethers.Wallet(privateKey, destChainProvider);
@@ -194,7 +200,7 @@ const toHex = (covertThis, padding) => {
 };
 
 const createResourceID = (contractAddress, chainID) => {
-  return toHex(contractAddress + toHex(chainID, 1).substr(2), 32)
+  return toHex(contractAddress + toHex(chainID, 4).substr(2), 32)
 };
 
 async function deployOneSide(wallet, debugPrefix) {
@@ -214,14 +220,18 @@ async function deployOneSide(wallet, debugPrefix) {
   const webb = await deployWEBBToken(wallet);
   let totalSupply = await webb.totalSupply();
   console.log(`Total supply: ${totalSupply.toString()}`);
-  const tx = await webb.mint(wallet.address, '1000000000000000000000');
+  const tx = await webb.mint(wallet.address, '1000000000000000000000', {
+    gasLimit: '0x5B8D80',
+  });
   await tx.wait();
   totalSupply = await webb.totalSupply();
   console.log(`Total supply: ${totalSupply.toString()}`);
 
   const timelock = await deployTimelockHarness(wallet);
   const gov = await deployGovBravoImmuable(wallet, webb, timelock);
-  await timelock.harnessSetAdmin(gov.address);
+  await timelock.harnessSetAdmin(gov.address, {
+    gasLimit: '0x5B8D80',
+  });
 
   const hasher = await deployHasher(wallet);
   const verifier = await deployVerifier2(wallet);
@@ -255,11 +265,19 @@ async function deployOneSide(wallet, debugPrefix) {
   const handler = await deployAnchorHandler(wallet, bridge, initialResourceIDs, initialContractAddresses);
   // transfer ownership of token/minting rights to the anchor
   MINTER_ROLE = ethers.utils.keccak256(ethers.utils.toUtf8Bytes('MINTER_ROLE'));
-  receipt = await webb.grantRole(MINTER_ROLE, anchor.address);
+  receipt = await webb.grantRole(MINTER_ROLE, anchor.address, {
+    gasLimit: '0x5B8D80',
+  });
   
-  await bridge.adminSetResource(handler.address, resourceID, anchor.address);
-  await anchor.setHandler(handler.address);
-  await anchor.setBridge(bridge.address);
+  await bridge.adminSetResource(handler.address, resourceID, anchor.address, {
+    gasLimit: '0x5B8D80',
+  });
+  await anchor.setHandler(handler.address, {
+    gasLimit: '0x5B8D80',
+  });
+  await anchor.setBridge(bridge.address, {
+    gasLimit: '0x5B8D80',
+  });
 }
 
 async function deployBothSides() {
